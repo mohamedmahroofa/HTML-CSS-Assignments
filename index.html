@@ -2,111 +2,73 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>A.R. Rahman's Wiki Page</title>
+    <title>Simple Form Exercise</title>
     <style>
 
-        body{
-            font-family: Arial, Helvetica, sans-serif;
-            margin: 20px;
-            
-        }
+         body {
+             font-family: Arial, Helvetica, sans-serif;
+         }
 
-        p {
-            line-height: 1.6;
-        }
 
         
-       .name {
-        background-color: #333;
-        color: #fff;
-        padding: 10px;
-        text-align: center;
-       }
 
-        .rest {
-            margin: 20px;
+        .tform{
+           margin-left: 730px;
+           line-height: 1.9;
         }
-        
-     .external a {
-        text-decoration: none;
-     }
 
-     .external a :hover{
-        color: red;
-     }
+        input[type=text], [type=email] {
+            width: 300px;
+            height: 20px;
+            padding: 5px;
+            font-size: 16px;
+        }
 
-     footer{
-        text-align: center;
-        background-color: #333;
-        color: #fff;
-        padding: 10px;
-     }
+        #selector {
+            width: 315px;
+            height: 30px;
+            padding: 5px;
+            }
+
+        button {
+            background-color: rgb(91, 138, 21);
+            width: 320px;
+            height: 30px;
+            padding: 5px;
+            color: white;
+        }
+
     </style>
 </head>
 <body>
-    <div class="name">
-    <header>
-        <h1>A.R. Rahman</h1>
-    </header>
-    <div class = image>
-    <figure>
-        <img src="Arr.jpg" alt="Ar Rahman" width="500px" height="300px" title="A.R.Rahman">
-        <figcaption>A.r.Rahman -<i>Indian Musical Composer and Producer</i></figcaption>
-    </figure>
-    </div>
-</div>
-<div class="rest">
-    <p><b>Allah Rakha Rahman </b>is an Indian Music composer, record producer, singer, songwriter, musician, multi-instrumentalist and philanthropist,
-        popular for his works in Indian cinema; predominantly in Tamil and Hindi films, with occasional forays in international cinema. He is a winner
-        of six National Film Awards, two Academy Awards, two Grammy Awards, a BAFTA Award, a Golden Globe Award, fifteen Filmfare Awards and seventeen 
-        filmfare Awards South.</p>
+    <h1>Simple Form Exercise</h1>
+    <br>
+    <div class="tform">
+    <form action="#" method="get">
+        <label for="firstName">First Name:</label><br>
+        <input type="text" id="firstName">
+        <br>
+        <label for="lastName">Last Name:</label><br>
+        <input type="text" id="lastName">
+        <br>
+        <label for="emailId">Email:</label><br>
+        <input type="email" id="emailId">
+        <br>
+        <label for="selector">Gender:</label><br>
+        <select id="selector">
+            <option value="one">Male</option>
+            <option value="two">Female</option>
+            <option value="three">Does not want to Specify</option>
+        </select>
+        <br>
+        <label for="messageArea">Message:</label><br>
+        <textarea name="messageArea"></textarea>
+        <br>
+        <button type="">Submit</button>
 
-        <h2>Early Life</h2>
-        <hr>
-        <p>Allah Rakha Rahman was born as A. S. Dileep Kumar in Madras, Tamil Nadu, on 6 January 1967. His father, R. K. Shekhar from a Mudaliar.
-            family, was a film-score composer and conductor for Tamil and Malayalam films. Rahman began studying piano at age four. 
-            He assisted his father in the studio, playing the keyboard.
-        </p>
-        <p>After his father's death when Rahman was nine years old, the rental of his father's musical equipment provided his family's income.
-            Raised by his mother, Kareema Rahman, who was studying in Padma Seshadri Bala Bhavan had to work to support his family, which led 
-            to him to routinely miss classes and fail exams. In an interview in 2012, Rahman said that his mother was summoned and was told 
-            to take him to the streets of Kodambakkam to beg and not to send him to the school any more.
-        </p>
-        <p>
-            Rahman attended another school called MCN for a year, and later joined the Madras Christian College Higher Secondary School,
-            where he was admitted on his music talent and formed a band with his high school classmates. However, after discussing 
-            with his mother, he later dropped out of school to pursue a career as a full-time musician.
-        </p>
-        <h2>Soundtracks</h2>
-        <hr>
-        <p>A. R. Rahman made his debut in Indian Music Industry with the 1992 Tamil film Roja. In his three decade long career, 
-            he has composed and produced original scores and songs for more than 145 films in various languages, namely Tamil,
-            Hindi, Telugu, Malayalam, English, Persian and Mandarin</p>
-            <ul>
-                <li>1993 - 2000</li>
-                <dfn>40 Movies & 28 Awards</dfn>
-            </ul>
-            <ul>
-                <li>2000 - 2010</li>
-                <dfn>62 Movie & More than 50 Awards including <strong>2 Oscars and a Golden Globe</strong></dfn>
-            </ul>
-            <ul>
-                <li>2011 - 2020</li>
-                <dfn>42 Movies and More than 100 Awards</dfn>
-            </ul>
-            <ul>
-                <li>2021 - Present</li>
-                <dfn>20 Movies and 5 Awards</dfn>
-            </ul>
-            <div class="external">
-            <h2>External Links</h2>
-            <ul>
-                <li><a href="https://www.arrahman.com/">Official Website</a></li>
-                <li><a href="https://en.wikipedia.org/wiki/A._R._Rahman">Wikipedia Page</a></li>
-            </ul>
-            </div>
-            <footer>&copy; 2024 A.r.Rahman Wiki</footer>
-           </div>
+    </form>
+</div>
 </body>
 </html>
