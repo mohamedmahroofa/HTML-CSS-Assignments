@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Visibility Toggler</title>
+
+    <script>
+        function toggleVisibilityOne(section1) {
+            let element = document.getElementById('section1');
+            if (element.style.display === 'none') {
+                element.style.display = 'block'; 
+            } else {
+                element.style.display = 'none';
+            }
+            
+        }
+
+        function toggleVisibilityTwo(section2) {
+            let image = document.getElementById('section2');
+            if (image.style.display === 'none') {
+                image.style.display = 'block';
+            } else {
+                image.style.display = 'none';
+            }
+        }
+
+        function toggleVisibilityThree(section3) {
+            let unList = document.getElementById('section3');
+            if (unList.style.display === 'none') {
+                unList.style.display = 'block';
+            } else {
+                unList.style.display = 'none';
+            }
+        }
+    </script>
+</head>
+
+    
+<body>
+    <div id="section1">
+    <p>This Paragraph is for practice number Two.</p>
+    </div>
+
+    <button onclick="toggleVisibilityOne(section1)">On /Off Paragraph</button>
+    
+    <br>
+    <div id="section2">
+    <img src="google.png" alt="Google Image" />
+    </div>
+    
+    <button onclick="toggleVisibilityTwo(section2)">On/Off Image</button>
+
+    <div id="section3">
+    <ul>
+        <li>HTML</li>
+        <li>CSS</li>
+        <li>Javascript</li>
+        <li>Angular</li>
+        <li>React JS</li>
+    </ul>
+    </div>
+
+    <button onclick ="toggleVisibilityThree(section3)"> On / Off  List</button>
+    
+</body>
+</html>
