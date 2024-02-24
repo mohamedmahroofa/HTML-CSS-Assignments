@@ -1,0 +1,62 @@
+body{
+    background: url("/media/bgpic.webp");
+    font-family: Verdana, Geneva, Tahoma, sans-serif;
+}
+
+.regform{
+    width: 550px;
+    background-color: rgba(0, 0, 0, 0.4);
+    margin: 250px auto;
+    color: white;
+    padding: 10px 20px 30px;
+    font-size: 30px;
+    border-radius: 10px;
+}
+
+.regform h3{
+    color: #BBDBB4;
+    text-align: center;
+    margin-bottom: 10px;
+}
+
+.regform .textlabel{
+    display: block;
+}
+
+.input input{
+    width: 100%;
+    font-size: 1.1em;
+    border: 1px solid green;
+    box-shadow: 2px;
+    border-radius: 9px;
+    padding: 10px 10px;
+    box-sizing: border-box;
+    margin: 5px 0 15px;
+}
+
+input:focus{
+    background-color: #FCF0CC;
+}
+
+.btn{
+    text-align: center;
+    display: block;
+}
+
+button{
+    background-color: #BBDBB4;
+    color: white;
+    font-size: 30px;
+    margin-top: 20px;
+    padding: 15px 25px;
+    border-radius: 9px;
+    border: 1px solid green;
+    box-shadow: 2px;
+}
+
+.radio input{
+    accent-color: #BBDBB4;
+    transform: scale(1.5);
+    -ms-transform: scale(1.5);
+    -webkit-transform: scale(1.5);
+}

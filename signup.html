@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <link rel="stylesheet" href="/CSS/styleform.css" type="text/css"/>
+
+    <title>Form</title>
+</head>
+<body>
+    <div class="regform">
+        <h3>Register Here</h3>
+        <form action="">
+            <div class="input">
+                <label class="textlabel" for="username">Username</label>
+                <input type="text" id="username" name="username" placeholder="Enter your New Username" required>
+            </div>
+
+            <div class="input">
+                <label class="textlabel" for="email">Email</label>
+                <input type="email" id="email" name="email" placeholder="Enter your Email" required>
+            </div>
+
+            <div class="input">
+                <label class="textlabel" for="pwd">Password</label>
+                <input type="password" id="pwd" name="pwd" placeholder="Enter your New Password" required>
+            </div>
+
+            <div class="radio">
+                <input type="radio" id="male" name="gender" value="male">
+                <label for="male">Male</label>
+
+                <input type="radio" id="female" name="gender" value="female">
+                <label for="female">Female</label>
+
+                <input type="radio" id="not" name="gender" value="not">
+                <label for="not">Prefer not to say</label>
+            </div>
+
+            <div class="btn">
+                <button type="submit">Register Me</button>
+                <button type="reset" style="background-color: red;">Reset</button>
+            </div>
+        </form>
+    </div>
+</body>
+</html>
