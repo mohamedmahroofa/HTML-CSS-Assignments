@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Shopping Cart</title>
+
+    <script type="text/javascript">
+        function toggleList() {
+            let list = document.getElementById('list');
+            if(list.style.display === 'none') {
+                list.style.display = 'block';
+            } else {
+                list.style.display = 'none';
+            }
+        }
+
+        function changeListColor() {
+  var color = document.getElementById('colorInput').value;
+  document.getElementById('myList').style.backgroundColor = color;
+}
+
+function addItem() {
+  var ul = document.getElementById("myList");
+  var newItem = document.getElementById("newItemInput").value;
+  var li = document.createElement("li");
+  li.appendChild(document.createTextNode(newItem));
+  ul.appendChild(li);
+}
+
+function removeItem() {
+  var ul = document.getElementById('myList');
+
+  var firstChild = ul.firstElementChild;
+  ul.removeChild(firstChild);
+}
+    </script>
+</head>
+<body>
+    <h1 id="myHeading">Shopping Cart</h1>
+<p>Your personal shopping cart.</p>
+<button id="toggleList" onclick="toggleList()">Hide cart</button>
+
+<div id="list">
+    <p>Type a color to change cart color:</p>
+    <input type="text" id="colorInput">
+   <button onclick="changeListColor()">Change List Color</button>
+    <ul id="myList">
+      <li>Item 1</li>
+      <li>Item 2</li>
+    </ul>
+    <p>Type a new item:</p>
+    <input type="text" id="newItemInput">
+    <button onclick="addItem()">Add item</button>
+    <button onclick="removeItem()">Remove item</button>
+  </div>
+</body>
+</html>
