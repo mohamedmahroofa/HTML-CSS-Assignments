@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Total + Tip Calculator per Person</title>
+
+    <script type="text/javascript">
+
+        function getBillAmount() {
+            let billAmount = document.getElementById('billamount').value;
+            return billAmount;
+        }
+
+        function getServiceQuality() {
+            let serviceQuality = document.getElementById('serviceQuality').value;
+            return serviceQuality;
+        }
+
+        function getNumberOfPeople() {
+            let numberOfPeople = document.getElementById('numberOfPeople').value;
+            return numberOfPeople;
+        }
+
+        function validateFormData(billAmount, serviceQuality, numberOfPeople) {
+            billAmount = parseFloat(billAmount);
+            serviceQuality = parseFloat(serviceQuality);
+            numberOfPeople = parseInt(numberOfPeople);
+
+            if( isNaN(billAmount)) {
+                alert('Invalid, Please enter valid bill amount!');
+                return false;
+            }
+            if( isNaN(serviceQuality)) {
+                alert('Invalid, Please enter valid bill amount!');
+                return false;
+            }
+            if( isNaN(numberOfPeople)) {
+                alert('Invalid, Please enter valid bill amount!');
+                return false;
+            }
+            return true;
+        }
+            
+    
+        
+            function calculateTheTip() {
+                let billAmount = getBillAmount();
+
+                let serviceQuality = getServiceQuality();
+
+                let numberOfPeople = getNumberOfPeople();
+
+                let isValid = validateFormData(billAmount, serviceQuality, numberOfPeople);
+
+                
+           if(!isValid) {
+               return;
+           }
+
+            let totalTip = parseFloat(billAmount) * parseFloat(serviceQuality);
+            let total = totalTip + parseFloat(billAmount);
+            let totalPerPerson = total / parseInt(numberOfPeople);
+
+            document.getElementById('totalPerPerson').innerHTML = `$ ${totalPerPerson.toFixed(2)}`;
+            }
+    </script>
+
+</head>
+
+<body>
+    <h1>Tip Calculator</h1>
+    <div id="calculator">
+        <form action="">
+            <p>How much was yout bill?</p>
+            <p>$ <input type="number" id="billamount" value="0.00"></p>
+
+            <p>How was this sevice?</p>
+            <p>
+                <select id="serviceQuality">
+                    <option value="0" selected disabled> -- Choose an option -- </option>
+                    <option value="0.2">Good</option>
+                    <option value="0.15">It was OK</option>
+                    <option value="0.05">Terrible</option>
+                </select>
+            </p>
+
+            <p>Number of people sharing the bill?</p>
+            <input type="number" id="numberOfPeople" value="1">
+        </form>
+        </p>
+
+        <p>
+            <button id="calculate" type="button" onclick="calculateTheTip();">Calculate Tip</button>
+        </p>
+        </form>
+        <p id="totalPerPerson"> </p>
+    </div>
+</body>
+
+</html>
