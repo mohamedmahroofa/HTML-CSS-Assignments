@@ -1,0 +1,76 @@
+import { Component } from '@angular/core';
+import { Address } from '../address';
+
+@Component({
+  selector: 'app-newstuff',
+  templateUrl: './newstuff.component.html',
+  styleUrl: './newstuff.component.css'
+})
+export class NewstuffComponent {
+     city: string;
+     postalCode: string;
+     phoneNumber : number;
+     newAddress: Address | undefined;
+     myOldAddress = {
+      city: "",
+      postalCode: "",
+      phoneNumber: ""
+     }
+
+     constructor(){
+      this.city = "Edmonton";
+      this.postalCode = "T5K 1K3";
+      this.phoneNumber = 1234567890;
+      this.newAddress = new Address(this.city, this.postalCode, this.phoneNumber);
+     }
+
+     phoneString(){
+      return "(780)-237-9376";
+     }
+
+     updateAddress(){
+      this.city = "Toronto";
+      this.postalCode = "T 5 K 1 J 3";
+      this.phoneNumber = 971529557342;
+     }
+
+     showOldAddress(){
+      this.myOldAddress.city = "Dubai";
+      this.myOldAddress.postalCode = "Al- Muteena";
+      this.myOldAddress.phoneNumber = "052 9557342";
+     }
+}
+
+-------------------------------------------------------------------------------
+export class Address {
+    city:string;
+    postalCode:string;
+    phoneNumber: number;
+
+    constructor(city:string, postalCode:string, phoneNumber: number){
+        this.city = city;
+        this.postalCode = postalCode;
+        this.phoneNumber = phoneNumber;
+    }
+}
+-----------------------------------------------------------------------------
+
+<p>Hello World</p>
+<p>I hope this works and I get 100% on the test tommorow.</p>
+<p>I am currently in {{newAddress?.city}}.</p>
+<p>My Postal code is : {{newAddress?.postalCode}}.</p>
+<p>You can call me at : {{newAddress?.phoneNumber}}.</p>
+
+<button (click) = "updateAddress()">Click me</button>
+<br>
+<br>
+<p>This is my new phone Number in Edmonton : {{phoneString()}}</p>
+<p>This is my Old adress previously:</p>
+<p>{{myOldAddress.city}}.</p>
+<p>{{myOldAddress.postalCode}}.</p>
+<p>{{myOldAddress.phoneNumber}}.</p>
+<button (click) = "showOldAddress()">Click for Old Address</button>
+
+-------------------------------------------------------------------------------
+
+
