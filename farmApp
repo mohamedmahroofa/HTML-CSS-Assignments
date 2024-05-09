@@ -1,0 +1,308 @@
+using Domain.Entities;
+
+namespace FarmApp
+{
+    internal class Program
+    {
+        static void Main(string[] args)
+        {
+            var driver = new Driver();
+            driver.StartRunning();         
+        }
+    }
+}
+
+
+-----------------------------------------------------------------------
+
+using Domain.Entities;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace FarmApp
+{
+    public class Driver
+    {
+        public bool IsRunning { get; set; }
+        public List<Animal> Animals { get; set; }
+
+        public Driver()
+        {
+            Animals = new List<Animal>();
+        }
+
+        public void StartRunning()
+        {
+            IsRunning = true;
+
+            while(IsRunning)
+            {
+                AskQuestions();
+            }
+        }
+
+        private void AskQuestions()
+        {
+            Console.WriteLine("Please enter 1 to see all animals.");
+            Console.WriteLine("Please enter 2 to Add an animal.");
+            Console.WriteLine("Please enter 3 to exit the application");
+            var userInput = Console.ReadLine();
+
+            if(int.TryParse(userInput, out var selection))
+            {
+                switch(selection)
+                {
+                    case 1:
+                        DisplayAnimals();
+                        break;
+                    case 2:
+                        AddAnimal();
+                        break;
+                    case 3:
+                        IsRunning = false;
+                        break;
+                    default:
+                        Console.WriteLine("Invalid Entry");
+                        break;
+                };
+            }
+            else
+            {
+                Console.WriteLine("Invalid Entry");
+            }            
+        }
+
+        private void AddAnimal()
+        {
+            var isValid = false;
+            while(isValid == false)
+            {
+                Console.WriteLine("Enter 1 to add an chicken");
+                Console.WriteLine("Enter 2 to add an cow");
+                Console.WriteLine("Enter 3 to add an pig");
+                Console.WriteLine("Enter 4 to add an owl");
+
+                var input = Console.ReadLine();
+
+                if(int.TryParse(input, out var animalSelection) 
+                    && animalSelection >= 1 
+                    && animalSelection <= 4)
+                {
+                    switch(animalSelection)
+                    {
+                        case 1:
+                            Animals.Add(new Chicken());
+                            break;
+                        case 2:
+                            Animals.Add(new Cow());
+                            break;
+                        case 3:
+                            Animals.Add(new Pig());
+                            break;
+                        case 4:
+                            Animals.Add(new Owl());
+                            break;
+                    }
+
+                    isValid = true;
+                }
+            }
+        }
+
+        private void DisplayAnimals()
+        {
+            foreach(var animal in Animals)
+            {
+                Console.WriteLine($"{animal.AnimalType} goes {animal.AnimalNoise()} and can fly? {animal.CanFly}");
+                if(animal.AnimalType == Domain.AnimalType.Cow || animal.AnimalType == Domain.AnimalType.Pig)
+                {
+                    Console.WriteLine($"The animal has {(animal as Mammal).NumberOfLegs}");
+                }
+            }
+        }
+    }
+}
+------------------------------------------------------------------------------------------------------------------------------
+
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace Domain
+{
+    public enum AnimalType
+    {
+        None = 0,
+        Chicken,
+        Cow,
+        Pig,
+        Owl
+    }
+}
+----------------------------------------------------------------------------------------------------------------------------------
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace Domain.Entities
+{
+    public abstract class BaseEntity
+    {
+        public AnimalType AnimalType { get; protected set; }
+    }
+}
+--------------------------------------------------------------------------------------
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace Domain.Entities
+{
+    public abstract class Animal : BaseEntity
+    {
+        public bool CanFly { get; protected set; }
+
+        public Animal(AnimalType animalType)
+        {
+            this.AnimalType = animalType;
+        }
+
+        public virtual string AnimalNoise()
+        {
+            return "No noise";
+        }
+    }
+}
+-------------------------------------------------------------------------------------
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace Domain.Entities
+{
+    public class Chicken : Bird
+    {
+        public Chicken() :base(AnimalType.Chicken)
+        {
+
+        }
+
+        public override string AnimalNoise()
+        {
+            return "Cluck";
+        }
+    }
+}
+----------------------------------------------------------------------------------------
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace Domain.Entities
+{
+    public class Cow : Mammal
+    {
+        public Cow() : base(AnimalType.Cow)
+        {
+            NumberOfLegs = 4;
+        }
+
+        public override string AnimalNoise()
+        {
+            return "Moo";
+        }
+    }
+}
+-------------------------------------------------------------------------------------------
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace Domain.Entities
+{
+    public class Pig : Mammal
+    {
+        public Pig() :base(AnimalType.Pig)
+        {
+            NumberOfLegs = 4;
+        }
+
+        public override string AnimalNoise()
+        {
+            return "Oink";
+        }
+    }
+}
+----------------------------------------------------------------------------------------------
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace Domain.Entities
+{
+    public class Owl : Bird
+    {
+        public Owl() :base(AnimalType.Owl)
+        {
+
+        }
+
+        public override string AnimalNoise()
+        {
+            return "Hoot";
+        }
+    }
+}
+-------------------------------------------------------------------------------------------
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace Domain.Entities
+{
+    public class Bird : Animal
+    {
+        public Bird(AnimalType animalType) : base(animalType)
+        {
+            CanFly = true;
+        }
+    }
+}
+---------------------------------------------------------------------------------------------
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace Domain.Entities
+{
+    public class Mammal : Animal
+    {
+        public Mammal(AnimalType animalType) : base(animalType)
+        {
+        }
+
+        public int NumberOfLegs { get; protected set; }
+    }
+}
+-----------------------------------------------------------------------------------------
