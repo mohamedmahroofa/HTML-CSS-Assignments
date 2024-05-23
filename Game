@@ -1,0 +1,568 @@
+using Infrastructure;
+using System.Reflection.Metadata;
+
+namespace PredatorPreySim
+{
+    public class Program
+    {
+        static void Main(string[] args)
+        {
+            bool waitingToStart = true;
+            while(waitingToStart)
+            {
+                Console.WriteLine("Enter Start to start the game");
+                if(Console.ReadLine()?.ToLower() == "start")
+                {
+                    waitingToStart = false;
+                }
+            }
+
+            StartGame(20, 20);
+        }
+
+        static void StartGame(int x, int y)
+        {
+            Console.Clear();
+            Console.WriteLine("Enter Stop to stop the game");
+            Console.WriteLine();
+
+            var gameService = CreateService();
+            gameService.StartGame(20, 20, 100, 5);
+
+            string input = string.Empty;
+            while (gameService.IsGameOver == false && input.ToLower() != "stop")
+            {
+                input = Console.ReadLine() ?? string.Empty;
+                gameService.NextIteration();
+            }
+        }
+
+        static GameService CreateService()
+        {
+            var gameboardService = new GameBoardService();
+            var creatureSErvice = new CreatureService(gameboardService);
+            var gameService = new GameService(gameboardService, creatureSErvice);
+
+            return gameService;
+        }
+    }
+}
+
+------------------------------------------------------------------------------------------------------------
+Infrastructure Folder ---
+
+namespace Infrastructure
+{
+    public class GameService
+    {
+        public GameService(GameBoardService gameBoardService, CreatureService creatureService)
+        {
+            this.creatureService = creatureService;
+            this.gameBoardService = gameBoardService;
+        }
+
+        private CreatureService creatureService { get; }
+        private GameBoardService gameBoardService { get; set; }
+        public int Iteration { get; set; }
+        public bool IsGameOver { get; set; }
+
+        public void StartGame(int width, int height, int preyCount, int predatorCount)
+        {
+            gameBoardService.CreateBoard(width, height);
+            creatureService.InitializeCreatures(preyCount, predatorCount);
+            gameBoardService.GenerateGameBoard();
+            WriteIteration();
+        }
+
+        public void NextIteration()
+        {
+            Iteration++;
+            creatureService.Move(0);
+            if(creatureService.IsExtinction())
+                IsGameOver = true;
+
+            WriteIteration();
+        }
+
+        private void WriteIteration()
+        {
+            gameBoardService.GenerateGameBoard();
+            Console.SetCursorPosition(0, gameBoardService.Height + 4);
+            Console.WriteLine($"Iteration: {Iteration}");
+        }
+    }
+}
+----------------------------------------------------------------------------------------
+using Core;
+using Core.Entities;
+
+namespace Infrastructure
+{
+    public class GameBoardService
+    {
+        public GameBoardService()
+        {
+            random = new Random();
+        }
+
+        private Random random { get; set; }
+        public int Width { get; private set; }
+        public int Height { get; private set; }
+        public GameBoard Board { get; set; }
+
+        public void CreateBoard(int width, int height)
+        {
+            Width = width;
+            Height = height;
+
+            Board = new GameBoard(Width, Height);
+            for (int x = 0; x < Width; x++)
+            {
+                for (int y = 0; y < Height; y++)
+                {
+                    Board.Cells[x, y] = new GameBoardCell(x, y);
+                }
+            }
+        }
+
+        public GameBoardCell GetRandomEmptyCell()
+        {
+            bool findEmptyCell = true;
+            GameBoardCell cell = null;
+
+            while (findEmptyCell)
+            {
+                var x = random.Next(Width);
+                var y = random.Next(Height);
+                if (IsEmptyCell(x, y))
+                {
+                    findEmptyCell = false;
+                    cell = Board.Cells[x, y];
+                }
+            }
+
+            return cell;
+        }
+
+        public GameBoardCell GetRandomDirectionalCell(GameBoardCell cell)
+        {
+            int attempts = 0;
+            while(attempts != 10)
+            {
+                var randomDirection = random.Next(4);
+                Move move = (Move)randomDirection;              
+
+                var potentialCell = EmptyDirectionCell(cell, move);
+                if (potentialCell != null)
+                    return potentialCell;
+                else
+                    attempts++;
+            }
+
+            return null;
+        }
+
+        private GameBoardCell EmptyDirectionCell(GameBoardCell cell, Move move)
+        {
+            switch (move)
+            {
+                case Move.Up:
+                    if (cell.Y > 0 && Board.Cells[cell.X, cell.Y - 1].Creature == null)
+                        return Board.Cells[cell.X, cell.Y - 1];
+                    break;
+                case Move.Down:
+                    if (cell.Y < Height - 1 && Board.Cells[cell.X, cell.Y + 1].Creature == null)
+                        return Board.Cells[cell.X, cell.Y + 1];
+                    break;
+                case Move.Left:
+                    if (cell.X > 0 && Board.Cells[cell.X - 1, cell.Y].Creature == null)
+                        return Board.Cells[cell.X - 1, cell.Y];
+                    break;
+                case Move.Right:
+                    if (cell.X < Width - 1 && Board.Cells[cell.X + 1, cell.Y].Creature == null)
+                        return Board.Cells[cell.X + 1, cell.Y];
+                    break;
+            }
+
+            return null;
+        }
+
+        private bool IsEmptyCell(int x, int y)
+        {
+            return Board.Cells[x, y].Creature == null;
+        }
+
+        public GameBoardCell GetCellWithCreatureType(GameBoardCell cell, CreatureType type)
+        {
+            for(int i = 0; i < 4; i++)
+            {
+                switch ((Move)i)
+                {
+                    case Move.Up:
+                        if (cell.Y > 0 && Board.Cells[cell.X, cell.Y - 1].Creature != null && Board.Cells[cell.X, cell.Y - 1].Creature.CreatureType == type)
+                            return Board.Cells[cell.X, cell.Y - 1];
+                        break;
+                    case Move.Down:
+                        if (cell.Y < Height - 1 && Board.Cells[cell.X, cell.Y + 1].Creature != null && Board.Cells[cell.X, cell.Y + 1].Creature.CreatureType == type)
+                            return Board.Cells[cell.X, cell.Y + 1];
+                        break;
+                    case Move.Left:
+                        if (cell.X > 0 && Board.Cells[cell.X - 1, cell.Y].Creature != null && Board.Cells[cell.X - 1, cell.Y].Creature.CreatureType == type)
+                            return Board.Cells[cell.X - 1, cell.Y];
+                        break;
+                    case Move.Right:
+                        if (cell.X < Width - 1 && Board.Cells[cell.X + 1, cell.Y].Creature != null && Board.Cells[cell.X + 1, cell.Y].Creature.CreatureType == type)
+                            return Board.Cells[cell.X + 1, cell.Y];
+                        break;
+                }
+            }
+
+            return null;
+        }
+
+        public void GenerateGameBoard()
+        {
+            Console.SetCursorPosition(0, 2);
+
+            for (int x = 0; x < Width; x++)
+            {
+                for (int y = 0; y < Height; y++)
+                {
+                    WriteCell(Board.Cells[x, y]);
+                }
+
+                Console.WriteLine();
+            }
+        }
+
+        private void WriteCell(GameBoardCell cell)
+        {
+            if (cell.Creature == null)
+            {
+                Console.Write("-");
+                return;
+            }
+
+            switch (cell.Creature.CreatureType)
+            {
+                case CreatureType.Predator:
+                    Console.ForegroundColor = ConsoleColor.Red;
+                    Console.Write("X");
+                    break;
+                case CreatureType.Prey:
+                    Console.ForegroundColor = ConsoleColor.DarkGreen;
+                    Console.Write("O");
+                    break;
+                default:
+                    Console.Write("Unknown");
+                    break;
+            }
+
+            Console.ForegroundColor = ConsoleColor.White;
+        }
+    }
+}
+------------------------------------------------------------------------------------
+using Core;
+using Core.Entities;
+
+namespace Infrastructure
+{
+    public class CreatureService
+    {
+        public const int MoveMinValue = 1;
+        public const int MoveMaxValue = 5;
+
+        public CreatureService(GameBoardService gameBoardService)
+        {
+            this.gameBoardService = gameBoardService;
+            Predators = new List<Predator>();
+            Prey = new List<Prey>();
+            preyToRemove = new List<Prey>();
+            predatorsToRemove = new List<Predator>();
+        }
+
+        public List<Predator> Predators { get; set; }
+        public List<Prey> Prey { get; set; }
+        private GameBoardService gameBoardService { get; set; }
+        private List<Predator> predatorsToRemove { get; set; }
+        private List<Prey> preyToRemove { get; set; }
+
+        public void InitializeCreatures(int preyCount, int predatorCount)
+        {
+            for (int i = 0; i < preyCount; i++)
+            {
+                var cell = gameBoardService.GetRandomEmptyCell();
+                var prey = new Prey();
+                Prey.Add(prey);
+                cell.SetCell(prey);
+            }
+
+            for (int i = 0; i < predatorCount; i++)
+            {
+                var cell = gameBoardService.GetRandomEmptyCell();
+                var predator = new Predator();
+                Predators.Add(predator);
+                cell.SetCell(predator);
+            }
+        }
+
+        public void Move(int timeout)
+        {
+            var predatorCount = Predators.Count;
+            for(int i = 0; i < predatorCount; i++)
+            {
+                Move(Predators[i]);
+                Thread.Sleep(timeout);
+            }
+
+            foreach (var predator in predatorsToRemove)
+            {
+                Predators.Remove(predator);
+            }
+
+            foreach (var prey in preyToRemove)
+            {
+                Prey.Remove(prey);
+            }
+
+            var preyCount = Prey.Count;
+            for (int i = 0; i < preyCount; i++)
+            {
+                Move(Prey[i]);
+                Thread.Sleep(timeout);
+            }
+        }
+
+        private void Move(CreatureBase creature)
+        {
+            creature.CurrentTurn++;
+            var moveCell = gameBoardService.GetRandomDirectionalCell(creature.CurrentPosition);
+            if (moveCell == null)
+                return;
+
+            creature.CurrentPosition.SetCell(null);
+            moveCell.SetCell(creature);
+
+            if (creature.CanBreed())
+            {
+                var freeCell = gameBoardService.GetRandomDirectionalCell(creature.CurrentPosition);
+
+                if (freeCell == null)
+                    return;
+
+                switch (creature.CreatureType)
+                {
+                    case CreatureType.Predator:
+                        var predator = new Predator();
+                        freeCell.SetCell(predator);
+                        Predators.Add(predator);
+                        break;
+                    case CreatureType.Prey:
+                        var prey = new Prey();
+                        freeCell.SetCell(prey);
+                        Prey.Add(prey);
+                        break;
+                    default:
+                        break;
+                }
+            }
+        }
+
+        private void Move(Predator predator)
+        {
+            //logic to eat
+            var preyCell = gameBoardService.GetCellWithCreatureType(predator.CurrentPosition, CreatureType.Prey);
+            if(preyCell != null)
+            {
+                predator.TurnsSinceEaten = 0;
+                predator.CurrentPosition.SetCell(null);
+                preyToRemove.Add((Prey)preyCell.Creature);
+                preyCell.SetCell(predator);
+            }
+            else
+            {
+                predator.TurnsSinceEaten++;
+            }
+
+            Move((CreatureBase)predator);
+            if (predator.HasStarved())
+            {
+                predator.CurrentPosition.SetCell(null);
+                predatorsToRemove.Add(predator);
+            }
+        }
+
+        public bool IsExtinction()
+        {
+            if(Prey.Count == 0 || Predators.Count == 0)
+                return true;
+
+            return false;
+        }
+    }
+}
+------------------------------------------------------------------------------------------------------------------------------------
+Core Folder
+
+
+namespace Core
+{
+    public enum Move
+    {
+        Up,
+        Down,
+        Left,
+        Right
+    }
+
+    public enum CreatureType
+    {
+        Predator,
+        Prey
+    }
+}
+-------------------------------------------------------------------------------
+Core > Entities Folder-------
+
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace Core.Entities
+{
+    public abstract class CreatureBase
+    {
+        public abstract int TurnsTillBreed { get; }
+        public abstract CreatureType CreatureType { get; }
+        public int CurrentTurn { get; set; }
+        public GameBoardCell CurrentPosition { get; set; }
+
+        public bool CanBreed()
+        {
+            return CurrentTurn % TurnsTillBreed == 0;
+        }
+    }
+}
+------------------------------------------------------------------------------
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace Core.Entities
+{
+    public class GameBoard
+    {
+        public int Width { get; }
+        public int Height { get; }
+
+        public GameBoard(int width, int height)
+        {
+            Cells = new GameBoardCell[width, height];
+            Width = width;
+            Height = height;          
+        }
+
+        public GameBoardCell[,] Cells { get; }
+    }
+}
+--------------------------------------------------------------------------------
+namespace Core.Entities
+{
+    public class GameBoardCell
+    {
+        public GameBoardCell(int x, int y)
+        {
+            X = x;
+            Y = y;
+        }
+
+        public CreatureBase Creature { get; set; }
+        public int X { get; set; }
+        public int Y { get; set; }
+
+        public void SetCell(CreatureBase creature)
+        {
+            Creature = creature;
+            if (creature != null)
+                creature.CurrentPosition = this;
+        }
+    }
+}
+---------------------------------------------------------------------------------
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Reflection.Metadata.Ecma335;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace Core.Entities
+{
+    public class Predator : CreatureBase
+    {
+        public override int TurnsTillBreed
+        {
+            get
+            {
+                return 8;
+            }
+        }
+
+        public int TurnsSinceEaten { get; set; }
+
+        public int TurnsTillStarve
+        {
+            get
+            {
+                return 3;
+            }
+        }
+
+        public override CreatureType CreatureType
+        {
+            get
+            {
+                return CreatureType.Predator;
+            }
+        }
+
+        public bool HasStarved()
+        {
+            return TurnsSinceEaten > TurnsTillStarve;
+        }
+    }
+}
+----------------------------------------------------------------------------
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace Core.Entities
+{
+    public class Prey : CreatureBase
+    {
+        public override int TurnsTillBreed
+        {
+            get
+            {
+                return 3;
+            }
+        }
+
+        public override CreatureType CreatureType
+        {
+            get
+            {
+                return CreatureType.Prey;
+            }
+        }
+    }
+}
+-------------------------------------------------------------------------------
